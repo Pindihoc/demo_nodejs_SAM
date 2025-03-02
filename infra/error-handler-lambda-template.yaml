@@ -1,0 +1,67 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+
+Parameters:
+    env:
+        Type: String
+        Default: dev
+        AllowedValues:
+            - dev
+            - prod
+    VpcId:
+        Type: AWS::EC2::VPC::Id
+    SubnetIds:
+        Type: List<AWS::EC2::Subnet::Id>
+
+Resources:
+    ################################################################################################
+    # Lambda Security Group
+    ################################################################################################
+    LambdaSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            VpcId: !Ref VpcId
+            GroupDescription: "Lambda Security Group"
+            SecurityGroupEgress:
+                - Description: "Lambda Security Group"
+                  IpProtocol: -1
+                  FromPort: -1
+                  ToPort: -1
+                  CidrIp: 0.0.0.0/0
+
+    #######################################################################################
+    # Create lambda
+    #######################################################################################
+    LambdaFunction:
+        Type: AWS::Serverless::Function
+        Properties:
+            FunctionName: "Lambda-3-Error-Handler"
+            PackageType: Image
+            Description: ''
+            MemorySize: 256
+            Timeout: 60
+            Architectures:
+                - arm64
+            EphemeralStorage:
+                Size: 512
+            EventInvokeConfig:
+                MaximumEventAgeInSeconds: 21600
+                MaximumRetryAttempts: 2
+            VpcConfig:
+                SecurityGroupIds:
+                    - !GetAtt LambdaSecurityGroup.GroupId
+                SubnetIds: !Ref SubnetIds
+                Ipv6AllowedForDualStack: false
+        Metadata:
+            DockerTag: nodejs22.x-v1
+            DockerContext: ../packages/
+            Dockerfile: cmd/lambda3.Dockerfile
+
+Outputs:
+    FunctionArn:
+        Description: Lambda Function ARN
+        Value: !GetAtt LambdaFunction.Arn
+    FunctionIamRole:
+        Description: Implicit IAM Role created for lambda function
+        Value: !GetAtt LambdaFunctionRole.Arn

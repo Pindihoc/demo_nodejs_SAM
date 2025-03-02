@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+
+Parameters:
+    env:
+        Type: String
+        Default: dev
+        AllowedValues:
+            - dev
+            - prod
+
+Mappings:
+    dev:
+        vpc:
+            VpcId: vpc-0e644cb2a16be3853
+            SubnetIds:
+                - subnet-0af67e8ddf50744f3
+                - subnet-0c04575ebeebbce89
+
+Resources:
+    Lambda1:
+        Type: AWS::Serverless::Application
+        Properties:
+            Location: infra/lambda-1-template.yaml
+            Parameters:
+                env: !Ref env
+                VpcId:  !FindInMap [dev, vpc, VpcId]
+                SubnetIds: !Join [",", !FindInMap [dev, vpc, SubnetIds]]
+
+    Lambda2:
+        Type: AWS::Serverless::Application
+        Properties:
+            Location: infra/lambda-2-template.yaml
+            Parameters:
+                env: !Ref env
+                VpcId: !FindInMap [ dev, vpc, VpcId ]
+                SubnetIds: !Join [ ",", !FindInMap [ dev, vpc, SubnetIds ] ]
+
+    ErrorHandler:
+        Type: AWS::Serverless::Application
+        Properties:
+            Location: infra/error-handler-lambda-template.yaml
+            Parameters:
+                env: !Ref env
+                VpcId: !FindInMap [ dev, vpc, VpcId ]
+                SubnetIds: !Join [ ",", !FindInMap [ dev, vpc, SubnetIds ] ]
+
+    StepFunction:
+        Type: AWS::Serverless::Application
+        Properties:
+            Location: infra/step-function-template.yaml
+            Parameters:
+                env: !Ref env
+                Lambda1Arn: !GetAtt Lambda1.Outputs.FunctionArn
+                Lambda2Arn: !GetAtt Lambda2.Outputs.FunctionArn
+                ErrorHandlerArn: !GetAtt ErrorHandler.Outputs.FunctionArn

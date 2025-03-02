@@ -1,0 +1,46 @@
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-config.html
+version: 0.1
+
+# sam build --use-container -t template.yaml
+# sam deploy --resolve-image-repos --config-env {{CONFIG_ENV}}
+# sam delete --stack-name demo-main --region {{REGION}} --profile {{PROFILE}}
+
+default: &default
+  global:
+    parameters:
+      stack_name: 'demo-main'
+      region: 'us-west-2'
+
+  build:
+    parameters:
+      cached: false
+      parallel: true
+
+  validate:
+    parameters:
+      lint: true
+
+  package:
+    parameters:
+      resolve_s3: true
+
+  sync:
+    parameters:
+      watch: true
+
+  local_start_api: &warm_containers
+    parameters:
+      warm_containers: EAGER
+
+  local_start_lambda: *warm_containers
+
+dev:
+  <<: *default
+  deploy:
+    parameters:
+      capabilities: CAPABILITY_IAM CAPABILITY_AUTO_EXPAND
+      confirm_changeset: false
+      resolve_s3: true
+      profile: '039856891021_PowerUserAccess'
+      parameter_overrides:
+        - env=dev

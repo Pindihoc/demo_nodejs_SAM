@@ -1,0 +1,53 @@
+{
+  "reportType": "yesterday",
+  "fromDate": "",
+  "toDate": "",
+  "offsetHour": "-7",
+  "request": {
+    "fileType": "txt",
+    "fileName": "Demo_File_Name",
+    "includeDateTimeInFileName": true,
+    "isEncrypted": false,
+    "isCompressed": true,
+    "delimiter": "|",
+    "createFileControl": false
+  },
+  "uploadFileToS3Bucket": "internal-for-test",
+  "encryptedKeyFromS3": "{{s3Bucket}}/{{s3Key}}",
+  "sendFileTo": [
+    {
+      "sendFileType": "email",
+      "sendFiles": [
+        "txt.gz"
+      ],
+      "sendFileConfig": [
+        {
+          "fromEmail": "pindihoc@gmail.com",
+          "toEmail": "pindihoc@gmail.com",
+          "subject": "Demo step function - Success",
+          "html": "Success"
+        }
+      ]
+    }
+  ],
+  "dbConfig": {
+    "name": "db_name",
+    "sqlConfig": {
+      "user": "{{user}}",
+      "password": "{{password}}",
+      "server": "{{server_url}}",
+      "database": "{{db_name}}",
+      "port": 1433,
+      "dialect": "mssql",
+      "options": {
+        "trustServerCertificate": true
+      }
+    },
+    "queryParams": [
+      "@fromDate",
+      "@toDate",
+      "@offsetHour"
+    ],
+    "queryString": "EXEC [dbo].[SP_demo] fromDate toDate offsetHour"
+  }
+}
