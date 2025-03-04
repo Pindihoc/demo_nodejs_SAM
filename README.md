@@ -33,11 +33,11 @@ The solution consists of the following components:
 │ ├── lambda-2-template.yaml # Lambda2 nested stack
 │ ├── error-handler-lambda-template.yaml # Error handler nested stack
 │ └── step-function-template.yaml # Step Function nested stack
-└── packages/
-├── handlers/ # Lambdas handler
-├── services/ # shared services
-├── tests/ # testcases for unit/ integration
-└── cmd/ # docker files
+├──  packages/
+│ ├──handlers/ # Lambdas handler
+│ ├──services/ # shared services
+│ ├──tests/ # testcases for unit/ integration
+│ └──cmd/ # docker files
 ```
 
 ## Deployment
