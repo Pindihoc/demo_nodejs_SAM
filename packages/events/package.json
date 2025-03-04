@@ -1,0 +1,7 @@
+{
+  "name": "@demo-sam/events",
+  "type": "module",
+  "exports": {
+    "./*": "./*.json"
+  }
+}

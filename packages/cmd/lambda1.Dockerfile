@@ -1,12 +1,9 @@
 FROM public.ecr.aws/lambda/nodejs:22
 
-COPY core/handlers/lambda1.mjs ./handlers/index.mjs
 COPY package*.json ./
-COPY core/services ./services
 
-RUN npm install
-# If you are building your code for production, instead include a package-lock.json file on this directory and use:
-#RUN npm ci --production
+COPY handlers/lambda1.mjs ./handlers/index.mjs
+COPY services/common ./services/common
 
-# Command can be overwritten by providing a different command in the template directly.
+RUN npm i --omit=dev
 CMD ["handlers/index.handler"]

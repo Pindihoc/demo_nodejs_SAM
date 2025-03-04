@@ -1,18 +1,13 @@
 {
-  "name": "demo_sam",
-  "version": "0.0.1",
+  "name": "demo-sam",
   "private": true,
-  "type": "module",
-  "dependencies": {
-    "@aws-lambda-powertools/parameters": "^2.15.0",
-    "@aws-sdk/client-dynamodb": "^3.738.0",
-    "@aws-sdk/client-lambda": "^3.738.0",
-    "@aws-sdk/client-secrets-manager": "^3.738.0",
-    "@aws-sdk/client-sqs": "^3.738.0",
-    "@aws-sdk/client-ssm": "^3.738.0",
-    "@aws-sdk/lib-dynamodb": "^3.738.0",
-    "mssql": "^11.0.1"
-  },
+  "workspaces": [
+    "events",
+    "handlers",
+    "services/*",
+    "tests"
+  ],
+  "dependencies": {},
   "devDependencies": {
     "aws-sdk-client-mock": "^4.1.0",
     "aws-sdk-client-mock-vitest": "^6.1.0",
